@@ -1,0 +1,33 @@
+Ryan Rozelle - Programming Assignment 5, CS645; due Nov. 28, 2012
+
+I set the initial illumination (color, or material) values for each sphere exactly as
+given in the assignment: for example, yellow would be (1,1,0). For the reflective
+floor, it has no initial value (everything it shows will only be a reflection), so
+it starts with a 0 initial value (rather, it's black - (0,0,0)).
+
+From there, when the rayTrace() function is using the illumination value at
+an intersection (or collision) of a ray, if it is a primary ray, it takes the
+full illumination value (0 if in shadow), then multiplies that by the "diffuse
+ratio", that is, the cosine of the angle of the normal to the light source.
+This value is then added to the product of (reflection ratio times reflection
+value). Reflection ratio is .5 for most spheres, .7 for the polished one,
+and 1.0 for the mirrored floor.
+To this value I then add the "specular ratio" (or rather, the specular
+ratio multiplied by white color, which is the same).
+
+I made keypresses control the location of the camera, location of the
+light source, and whether shadows are shown, in order to provide extra
+features and allow the user to modify the scene to show different
+lighting angles and parts of the scene.
+
+I also determined through some quick trial-and-error that a specular exponent
+of 7.0 was reasonable, and any higher did not show any improvement.
+
+I set the resolution (RES) initially at 100, but upped it quickly to 300 (since
+the canvas size is 550x300, it looked much better to fill it).
+
+For the Phong illumination of the curtains, I used the following parameters:
+ambient = {0.1, 1.0, 0.1} - Trial-and-error (green) parameter.
+diffuse = {0.6, 0.8, 0.6} - Trial-and-error (green) parameter.
+specular= {1.0, 1.0, 1.0} - For a white specular reflection.
+shininess = {50.0} - About 50% shininess.
