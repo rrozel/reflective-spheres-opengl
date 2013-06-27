@@ -1,4 +1,4 @@
-Ryan Rozelle - Programming Assignment 5, CS645; due Nov. 28, 2012
+Ryan Rozelle - Programming Assignment 4, CS645; due Nov. 5, 2012
 
 I set the initial illumination (color, or material) values for each sphere exactly as
 given in the assignment: for example, yellow would be (1,1,0). For the reflective
@@ -24,10 +24,4 @@ I also determined through some quick trial-and-error that a specular exponent
 of 7.0 was reasonable, and any higher did not show any improvement.
 
 I set the resolution (RES) initially at 100, but upped it quickly to 300 (since
-the canvas size is 550x300, it looked much better to fill it).
-
-For the Phong illumination of the curtains, I used the following parameters:
-ambient = {0.1, 1.0, 0.1} - Trial-and-error (green) parameter.
-diffuse = {0.6, 0.8, 0.6} - Trial-and-error (green) parameter.
-specular= {1.0, 1.0, 1.0} - For a white specular reflection.
-shininess = {50.0} - About 50% shininess.
+the canvas size is 300x300, it looked much better to fill it).

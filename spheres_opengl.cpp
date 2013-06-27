@@ -1,8 +1,7 @@
-// Ryan Rozelle - Programming Assignment 5, CS645; due Nov. 28, 2012
+// Ryan Rozelle - Programming Assignment 4, CS645; due Nov. 5, 2012
 //  Associated "my_setup.h" file is required (2 lines commented out in reshape callback)
 //
-//  New Extras: Manual light movement on curtains (uhjk)
-//  OLD EXTRAS: camera movement (wasd), raytrace light movement (uhjk), and shadows (f).
+//  EXTRAS: camera movement (wasd), light movement (uhjk), and shadows (f).
 //
 // Program Architecture:
 //  Key Program activities:
@@ -11,7 +10,7 @@
 //      tracing the ray through it from the camera. Also used, when given a reflected ray,
 //      to add in additional illumination from reflection at an intersection.
 //   display_func() - Registered as OpenGL display function callback.
-//      Performs transformations, sets perspective, draws curtains and raytrace scene.
+//      Performs transformations, sets perspective, draws scene.
 //   keypress() - Registered as OpenGL keyboard key press function callback.
 //      Captures key press events, allows on-the-fly scene movement.
 //  Architecture:
@@ -37,14 +36,13 @@
 #include <math.h>
 #include "my_setup.h"
 
-#define canvas_Width 550
+#define canvas_Width 300
 #define canvas_Height 300
-#define canvas_Name "Ryan Rozelle Prog5"
-#define MW 1.7  // multiply width
+#define canvas_Name "Ryan Rozelle Prog4"
 
-#define MAX_DEPTH 2
+
+#define MAX_DEPTH 3
 #define RES 300
-#define MESH_RES 20
 
 
 struct Point
@@ -83,7 +81,7 @@ void printKey()
 	printf ("Key presses:\n");
 	printf ("G: Draws scene initially.\n");
 	printf ("L: Toggles light position between original and x+=20.\n");
-	printf ("      Old Extras:\n");
+	printf ("      Extras:\n");
 	printf ("r: Resets the following to initial state:\n");
 	printf ("  u,h,j,k: Move light position up, left, down, or right.\n");
 	printf ("  w,a,s,d: Move camera position up, left, down, or right.\n");
@@ -394,53 +392,9 @@ Color traceRay(Point ray, Point st, int depth)
 	return illum;
 }
 
-GLfloat mesh1[4][4][3] = {
-   {{-91.66, -50.00, -2}, {-86.458, -50.00, -1}, {-81.25, -50.00, 0}, {-76.04, -50.00, -1}}, 
-   {{-91.66, -16.66, -2}, {-86.458, -16.66, -1}, {-81.25, -16.66, 0}, {-76.04, -16.66, -1}}, 
-   {{-91.66, 16.66, -2}, {-86.458, 16.66, -1}, {-81.25, 16.66, 0}, {-76.04, 16.66, -1}}, 
-   {{-91.66, 50.00, -2}, {-86.458, 50.00, -1}, {-81.25, 50.00, 0}, {-76.04, 50.00, -1}}
-};
-GLfloat mesh2[4][4][3] = {
-   {{-76.04, -50.00, -1}, {-70.83, -50.00, -2}, {-65.62, -50.00, -1}, {-60.41, -50.00, 0}}, 
-   {{-76.04, -16.66, -1}, {-70.83, -16.66, -2}, {-65.62, -16.66, -1}, {-60.41, -16.66, 0}}, 
-   {{-76.04, 16.66, -1}, {-70.83, 16.66, -2}, {-65.62, 16.66, -1}, {-60.41, 16.66, 0}}, 
-   {{-76.04, 50.00, -1}, {-70.83, 50.00, -2}, {-65.62, 50.00, -1}, {-60.41, 50.00, 0}}
-};
-GLfloat mesh3[4][4][3] = {
-   {{-60.41, -50.00, 0}, {-56.94, -50.00, -0.5}, {-53.47, -50.00, -1.5}, {-50, -50.00, -2}}, 
-   {{-60.41, -16.66, 0}, {-56.94, -16.66, -0.5}, {-53.47, -16.66, -1.5}, {-50, -16.66, -2}}, 
-   {{-60.41, 16.66, 0}, {-56.94, 16.66, -0.5}, {-53.47, 16.66, -1.5}, {-50, 16.66, -2}}, 
-   {{-60.41, 50.00, 0}, {-56.94, 50.00, -0.5}, {-53.47, 50.00, -1.5}, {-50, 50.00, -2}}
-};
-GLfloat mesh4[4][4][3] = {
-   {{91.66, -50.00, -2}, {86.458, -50.00, -1}, {81.25, -50.00, 0}, {76.04, -50.00, -1}}, 
-   {{91.66, -16.66, -2}, {86.458, -16.66, -1}, {81.25, -16.66, 0}, {76.04, -16.66, -1}}, 
-   {{91.66, 16.66, -2}, {86.458, 16.66, -1}, {81.25, 16.66, 0}, {76.04, 16.66, -1}}, 
-   {{91.66, 50.00, -2}, {86.458, 50.00, -1}, {81.25, 50.00, 0}, {76.04, 50.00, -1}}
-};
-GLfloat mesh5[4][4][3] = {
-   {{76.04, -50.00, -1}, {70.83, -50.00, -2}, {65.62, -50.00, -1}, {60.41, -50.00, 0}}, 
-   {{76.04, -16.66, -1}, {70.83, -16.66, -2}, {65.62, -16.66, -1}, {60.41, -16.66, 0}}, 
-   {{76.04, 16.66, -1}, {70.83, 16.66, -2}, {65.62, 16.66, -1}, {60.41, 16.66, 0}}, 
-   {{76.04, 50.00, -1}, {70.83, 50.00, -2}, {65.62, 50.00, -1}, {60.41, 50.00, 0}}
-};
-GLfloat mesh6[4][4][3] = {
-   {{60.41, -50.00, 0}, {56.94, -50.00, -0.5}, {53.47, -50.00, -1.5}, {50, -50.00, -2}}, 
-   {{60.41, -16.66, 0}, {56.94, -16.66, -0.5}, {53.47, -16.66, -1.5}, {50, -16.66, -2}}, 
-   {{60.41, 16.66, 0}, {56.94, 16.66, -0.5}, {53.47, 16.66, -1.5}, {50, 16.66, -2}}, 
-   {{60.41, 50.00, 0}, {56.94, 50.00, -0.5}, {53.47, 50.00, -1.5}, {50, 50.00, -2}}
-};
-
-void initSpline()
-{
-   glEnable(GL_DEPTH_TEST);
-   glEnable(GL_MAP2_VERTEX_3);
-   glMapGrid2f(MESH_RES, 0.0, 1.0, MESH_RES, 0.0, 1.0);
-}
-
 void display_func(void)
 { 
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glClear (GL_COLOR_BUFFER_BIT);
 
 	if (!DISPLAY_ON)
 	{
@@ -450,58 +404,22 @@ void display_func(void)
 		glLoadIdentity();
 		glMatrixMode (GL_PROJECTION);
 		glLoadIdentity();
-		output(-0.5, 0.3,  0,0,0,  GLUT_BITMAP_HELVETICA_18,line1);
-		output(-0.5, 0.0,  0,0,0,  GLUT_BITMAP_HELVETICA_18,line2);
-		output(-0.5,-0.2,  0,0,0,  GLUT_BITMAP_HELVETICA_18,line3);
+		output(-0.8, 0.3,  0,0,0,  GLUT_BITMAP_HELVETICA_18,line1);
+		output(-0.8, 0.0,  0,0,0,  GLUT_BITMAP_HELVETICA_18,line2);
+		output(-0.8,-0.2,  0,0,0,  GLUT_BITMAP_HELVETICA_18,line3);
 		glMatrixMode (GL_MODELVIEW);
 	}
 	else
 	{
-		glClearColor (0.2, 0.4, 0.2, 0.0);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glLoadIdentity();  // clear the matrix
-				
+		//gluLookAt (cam.x,cam.y,50, 0,0,0, 0,1,0);  // viewing transform
+		
 		glMatrixMode (GL_PROJECTION); // Change mode view in projection mode, then switch back
 		glLoadIdentity();
-		gluOrtho2D(cam.x-(50*MW),cam.x+(50*MW),cam.y-50,cam.y+50);
+		//glOrtho (-50,50,-50,50,0,-100);  // For parallel mode view
+		gluOrtho2D(cam.x-50,cam.x+50,cam.y-50,cam.y+50);
 		glMatrixMode (GL_MODELVIEW);
-		
-		// Curtains:
-		glPushMatrix();
-		GLfloat position[] = {light_pos.x, light_pos.y, light_pos.z, 1.0};
-		GLfloat ambient[] = {0.1, 1.0, 0.1};
-		GLfloat mat_diffuse[] = {0.6, 0.8, 0.6};
-		GLfloat mat_specular[] = {1.0, 1.0, 1.0};
-		GLfloat mat_shininess[] = {50.0};
 
-		glLightfv(GL_LIGHT0, GL_AMBIENT, ambient);
-		glLightfv(GL_LIGHT0, GL_POSITION, position);
-
-		glMaterialfv(GL_FRONT, GL_DIFFUSE, mat_diffuse);
-		glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
-		glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
-		glEnable(GL_LIGHTING);
-		glEnable(GL_LIGHT0);
-		
-		// Draw spline patches (curtains):
-		glMap2f(GL_MAP2_VERTEX_3, 0, 1, 3, 4, 0, 1, 12, 4, &mesh1[0][0][0]);
-		glEvalMesh2(GL_FILL, 0, MESH_RES, 0, MESH_RES);
-		glMap2f(GL_MAP2_VERTEX_3, 0, 1, 3, 4, 0, 1, 12, 4, &mesh2[0][0][0]);
-		glEvalMesh2(GL_FILL, 0, MESH_RES, 0, MESH_RES);
-		glMap2f(GL_MAP2_VERTEX_3, 0, 1, 3, 4, 0, 1, 12, 4, &mesh3[0][0][0]);
-		glEvalMesh2(GL_FILL, 0, MESH_RES, 0, MESH_RES);
-		glMap2f(GL_MAP2_VERTEX_3, 0, 1, 3, 4, 0, 1, 12, 4, &mesh4[0][0][0]);
-		glEvalMesh2(GL_FILL, 0, MESH_RES, 0, MESH_RES);
-		glMap2f(GL_MAP2_VERTEX_3, 0, 1, 3, 4, 0, 1, 12, 4, &mesh5[0][0][0]);
-		glEvalMesh2(GL_FILL, 0, MESH_RES, 0, MESH_RES);
-		glMap2f(GL_MAP2_VERTEX_3, 0, 1, 3, 4, 0, 1, 12, 4, &mesh6[0][0][0]);
-		glEvalMesh2(GL_FILL, 0, MESH_RES, 0, MESH_RES);
-		
-		glDisable(GL_LIGHTING);
-		glDisable(GL_LIGHT0);
-		glPopMatrix();
-
-		// Ray tracing:
 		Point start = cam; // ray starting point
 		Point ray={0,0,-1}; // direction ray
 		Color illum;
@@ -545,7 +463,6 @@ int main(int argc, char** argv)
 	my_setup(canvas_Width, canvas_Height, canvas_Name);
 
 	initial();  // Set initial values of global variables
-	initSpline();
 
 	glutDisplayFunc(display_func); // Register display callback
 	glutKeyboardFunc(keypress); // Register key press callback
